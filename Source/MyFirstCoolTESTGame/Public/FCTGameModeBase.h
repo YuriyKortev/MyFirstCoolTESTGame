@@ -13,5 +13,7 @@ UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCTGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AFCTGameModeBase();
 };
