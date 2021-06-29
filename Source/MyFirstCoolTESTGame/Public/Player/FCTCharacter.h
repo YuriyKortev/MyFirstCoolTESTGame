@@ -28,6 +28,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	USpringArmComponent* SpringArmComponent;
+
 	
 public:	
 	// Called every frame
@@ -42,4 +43,11 @@ private:
 
 	void LookUp(float Amount);
 	void TurnAround(float Amount);
+
+	void StartRun();
+	void EndRun();
+	
+	void StartCrouch();
+	void EndCrouch();
 };
+
