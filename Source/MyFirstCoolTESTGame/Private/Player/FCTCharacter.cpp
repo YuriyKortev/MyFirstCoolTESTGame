@@ -47,6 +47,7 @@ void AFCTCharacter::BeginPlay()
 	HealthComponent->OnDeath.AddUObject(this, &AFCTCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &AFCTCharacter::OnHealthChanged);
 
+	LandedDelegate.AddDynamic(this, &AFCTCharacter::OnGroundLanded);
 }
 
 // Called every frame
@@ -154,6 +155,22 @@ void AFCTCharacter::OnDeath()
 void AFCTCharacter::OnHealthChanged(float Health)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void AFCTCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+
+	UE_LOG(LogMainCharacter, Display, TEXT("Landed: %f"), FallVelocityZ);
+
+	if(FallVelocityZ < LandedDamage.X) return;
+
+	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage,
+		FallVelocityZ);
+
+	UE_LOG(LogMainCharacter, Display, TEXT("Final Damage: %f"), FinalDamage);
+
+	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
 
 void AFCTCharacter::StartRun()
