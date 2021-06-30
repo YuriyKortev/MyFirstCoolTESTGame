@@ -3,7 +3,16 @@
 
 #include "Player/FCTCharacter.h"
 
+
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Camera/CameraComponent.h"
+#include "Components/InputComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/FCGHealthComponent.h"
+#include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
+
+DEFINE_LOG_CATEGORY_STATIC(LogMainCharacter, All, All)
 
 // Sets default values
 AFCTCharacter::AFCTCharacter()
@@ -17,20 +26,33 @@ AFCTCharacter::AFCTCharacter()
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
+
+	HealthComponent = CreateDefaultSubobject<UFCGHealthComponent>("HealthComponent");
+
+	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+	HealthTextComponent->SetupAttachment(GetRootComponent());
+
 }
 
 // Called when the game starts or when spawned
 void AFCTCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	check(HealthComponent);
+	check(HealthTextComponent);
+	check(GetCharacterMovement());
+
+	OnHealthChanged(HealthComponent->GetHealth());
+	HealthComponent->OnDeath.AddUObject(this, &AFCTCharacter::OnDeath);
+	HealthComponent->OnHealthChanged.AddUObject(this, &AFCTCharacter::OnHealthChanged);
+
 }
 
 // Called every frame
 void AFCTCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -113,7 +135,28 @@ void AFCTCharacter::EndCrouch()
 	UnCrouch();
 }
 
-inline void AFCTCharacter::StartRun()
+void AFCTCharacter::OnDeath()
+{
+	UE_LOG(LogMainCharacter, Display, TEXT("Character %s is dead"), *GetName())
+
+	PlayAnimMontage(DeathAnimMontage);
+
+	GetCharacterMovement()->DisableMovement();
+
+	SetLifeSpan(5.0f);
+
+	if(Controller)
+	{
+		Controller->ChangeState(NAME_Spectating);
+	}
+}
+
+void AFCTCharacter::OnHealthChanged(float Health)
+{
+	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
+}
+
+void AFCTCharacter::StartRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 1000;
 }

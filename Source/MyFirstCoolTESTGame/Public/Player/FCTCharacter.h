@@ -4,11 +4,16 @@
 
 #include "CoreMinimal.h"
 
-#include "Camera/CameraComponent.h"
+#include "Components/TextRenderComponent.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/SpringArmComponent.h"
 
 #include "FCTCharacter.generated.h"
+
+class UCameraComponent;
+class USpringArmComponent;
+class UFCGHealthComponent;
+class UTextRenderComponent;
+class UAnimMontage;
 
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCTCharacter : public ACharacter
@@ -29,7 +34,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
 	USpringArmComponent* SpringArmComponent;
 
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UFCGHealthComponent* HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Components")
+	UTextRenderComponent* HealthTextComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="Animation")
+	UAnimMontage* DeathAnimMontage;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -49,5 +62,9 @@ private:
 	
 	void StartCrouch();
 	void EndCrouch();
+
+	void OnDeath();
+	void OnHealthChanged(float Health);
+
 };
 
