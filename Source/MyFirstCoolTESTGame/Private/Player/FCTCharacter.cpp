@@ -12,6 +12,7 @@
 #include "Components/FCGHealthComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/FCGWeaponComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "GameFramework/Controller.h"
 
@@ -163,6 +164,9 @@ void AFCTCharacter::OnDeath()
 {
 	UE_LOG(LogMainCharacter, Display, TEXT("Character %s is dead"), *GetName())
 
+	if(IsAlreadyDead) return;
+	IsAlreadyDead = true;
+	
 	PlayAnimMontage(DeathAnimMontage);
 
 	GetCharacterMovement()->DisableMovement();
@@ -173,6 +177,7 @@ void AFCTCharacter::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AFCTCharacter::OnHealthChanged(float Health)

@@ -52,7 +52,9 @@ void AFCGBaseWeapon::MakeShot()
 		
 		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
 
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);		
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+
+		MakeDamage(HitResult);
 	}
 	else
 	{
@@ -107,5 +109,12 @@ void AFCGBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, c
 }
 
 
+void AFCGBaseWeapon::MakeDamage(const FHitResult& HitResult) const
+{
+	const auto HitActor = HitResult.GetActor();
+	if(!HitActor) return;
+	
+	HitActor->TakeDamage(Damage, FDamageEvent{}, GetPlayerController(), GetOwner());
+}
 
 

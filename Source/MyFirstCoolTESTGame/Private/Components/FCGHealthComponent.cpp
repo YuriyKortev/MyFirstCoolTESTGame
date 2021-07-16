@@ -59,11 +59,13 @@ void UFCGHealthComponent::OnTakeAnyDamageHandle(AActor* DamagedActor, float Dama
 
 void UFCGHealthComponent::OnRecoveryIter()
 {
-	SetHealth(Health + RecoveryStep);
-	if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+	if (GetWorld() && (IsDead() || FMath::IsNearlyEqual(Health, MaxHealth)))
 	{
 		GetWorld()->GetTimerManager().ClearTimer(RecoveryTimer);
+		return;
 	}
+	
+	SetHealth(Health + RecoveryStep);
 }
 
 void UFCGHealthComponent::SetHealth(float NewHealth)

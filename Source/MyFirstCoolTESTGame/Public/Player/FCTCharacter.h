@@ -68,6 +68,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
 	float MaxAimSpeed = 250.0f;
 
+	bool IsAlreadyDead = false;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
