@@ -3,14 +3,18 @@
 
 #include "Player/FCTCharacter.h"
 
-
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Camera/CameraComponent.h"
-#include "Components/InputComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+
+#include "Camera/CameraComponent.h"
+
+#include "Components/InputComponent.h"
 #include "Components/FCGHealthComponent.h"
 #include "Components/TextRenderComponent.h"
+#include "Components/FCGWeaponComponent.h"
+
 #include "GameFramework/Controller.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogMainCharacter, All, All)
 
@@ -32,6 +36,7 @@ AFCTCharacter::AFCTCharacter()
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 
+	WeaponComponent = CreateDefaultSubobject<UFCGWeaponComponent>("WeaponComponent");
 }
 
 // Called when the game starts or when spawned
@@ -74,12 +79,14 @@ void AFCTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AFCTCharacter::StartCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AFCTCharacter::EndCrouch);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::Fire);
 }
 
 void AFCTCharacter::MoveForward(float AxisValue)
 {
-	// AddMovementInput(GetActorForwardVector(), AxisValue);
-	
+	AddMovementInput(GetActorForwardVector(), AxisValue);
+	/*
 	if ((Controller != nullptr) && (AxisValue != 0.0f))
 	{
 		// Find out which way is forward
@@ -90,13 +97,13 @@ void AFCTCharacter::MoveForward(float AxisValue)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, AxisValue);
 	}
-	
+	*/
 }
 
 void AFCTCharacter::MoveRight(float AxisValue)
 {
-	// AddMovementInput(GetActorRightVector(), Amount);
-	
+	AddMovementInput(GetActorRightVector(), AxisValue);
+	/*
 	if ((Controller != nullptr) && (AxisValue != 0.0f))
 	{
 		// Find out which way is right
@@ -109,6 +116,7 @@ void AFCTCharacter::MoveRight(float AxisValue)
 		// Add movement in that direction
 		AddMovementInput(Direction, AxisValue);
 	}
+	*/
 }
 
 void AFCTCharacter::LookUp(float Amount)
@@ -157,6 +165,7 @@ void AFCTCharacter::OnHealthChanged(float Health)
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }
 
+
 void AFCTCharacter::OnGroundLanded(const FHitResult& Hit)
 {
 	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
@@ -177,4 +186,5 @@ void AFCTCharacter::StartRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 1000;
 }
+
 

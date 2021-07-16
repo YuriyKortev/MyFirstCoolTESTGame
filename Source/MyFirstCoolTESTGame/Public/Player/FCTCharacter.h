@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 
-#include "Components/TextRenderComponent.h"
+#include "Components/FCGWeaponComponent.h"
 #include "GameFramework/Character.h"
-
 #include "FCTCharacter.generated.h"
 
 class UCameraComponent;
@@ -14,6 +13,8 @@ class USpringArmComponent;
 class UFCGHealthComponent;
 class UTextRenderComponent;
 class UAnimMontage;
+class UFCGWeaponComponent;
+
 
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCTCharacter : public ACharacter
@@ -48,6 +49,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Movement")
 	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UFCGWeaponComponent* WeaponComponent;
 
 public:	
 	// Called every frame
