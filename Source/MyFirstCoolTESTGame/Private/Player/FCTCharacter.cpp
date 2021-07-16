@@ -81,6 +81,9 @@ void AFCTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AFCTCharacter::EndCrouch);
 
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::Fire);
+	
+	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AFCTCharacter::StartAim);
+	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AFCTCharacter::EndAim);
 }
 
 void AFCTCharacter::MoveForward(float AxisValue)
@@ -131,7 +134,7 @@ void AFCTCharacter::TurnAround(float Amount)
 
 void AFCTCharacter::EndRun()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 600;
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
 void AFCTCharacter::StartCrouch()
@@ -142,6 +145,18 @@ void AFCTCharacter::StartCrouch()
 void AFCTCharacter::EndCrouch()
 {
 	UnCrouch();
+}
+
+void AFCTCharacter::StartAim()
+{
+	WantsAim = true;
+	GetCharacterMovement()->MaxWalkSpeed = MaxAimSpeed;
+}
+
+void AFCTCharacter::EndAim()
+{
+	WantsAim = false;
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
 void AFCTCharacter::OnDeath()
@@ -184,7 +199,8 @@ void AFCTCharacter::OnGroundLanded(const FHitResult& Hit)
 
 void AFCTCharacter::StartRun()
 {
-	GetCharacterMovement()->MaxWalkSpeed = 1000;
+	if(WantsAim) return;
+	GetCharacterMovement()->MaxWalkSpeed = MaxRunSpeed;
 }
 
 

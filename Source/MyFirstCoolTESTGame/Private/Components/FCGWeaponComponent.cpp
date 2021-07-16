@@ -44,5 +44,6 @@ void UFCGWeaponComponent::SpawnWeapon()
 		
 	CurrentWeapon->AttachToComponent(Owner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		WeaponAttachPointName);
+	CurrentWeapon->SetOwner(GetOwner());
 }
 

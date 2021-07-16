@@ -53,6 +53,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	UFCGWeaponComponent* WeaponComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	bool WantsAim = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float MaxWalkSpeed = 600.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float MaxRunSpeed = 1000.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float MaxCrouchSpeed = 250.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Movement")
+	float MaxAimSpeed = 250.0f;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -73,6 +88,9 @@ private:
 	void StartCrouch();
 	void EndCrouch();
 
+	void StartAim();
+	void EndAim();
+	
 	void OnDeath();
 	void OnHealthChanged(float Health);
 
