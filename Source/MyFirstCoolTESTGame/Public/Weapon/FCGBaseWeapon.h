@@ -7,6 +7,9 @@
 #include "FCGBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class AFCTCharacter;
+
+DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
 
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCGBaseWeapon : public AActor
@@ -16,30 +19,27 @@ class MYFIRSTCOOLTESTGAME_API AFCGBaseWeapon : public AActor
 public:	
 	AFCGBaseWeapon();
 
-	virtual void Fire();
+	virtual void StartFire();
+	virtual void EndFire();
+
+	void SetWeaponOwner(AFCTCharacter* NewOwner) { WeaponOwner = NewOwner; }
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
 	FName MuzzleSocketName = "MuzzleSocket";
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float TraceMaxDistance = 1500.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	float Damage = 30.0f;
+	UPROPERTY(EditAnywhere, Category="Animation")
+	UAnimMontage* FireAnimMontage;
+
+	UPROPERTY()
+	AFCTCharacter* WeaponOwner;
 
 	virtual void BeginPlay() override;
 
-	void MakeShot();
+	virtual void MakeShot();
 	
-	APlayerController* GetPlayerController() const;
-	bool GetPlayerViewPoint(FRotator& Rotator, FVector& Location) const;
-	FVector GetMuzzleWorldLocation() const;
-	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
-	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
-	
-	void MakeDamage(const FHitResult& HitResult) const;
+	bool WantsFire=false;
 };

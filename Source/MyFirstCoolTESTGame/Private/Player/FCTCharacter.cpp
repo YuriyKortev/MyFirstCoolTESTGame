@@ -81,10 +81,16 @@ void AFCTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AFCTCharacter::StartCrouch);
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AFCTCharacter::EndCrouch);
 
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::Fire);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UFCGWeaponComponent::EndFire);
 	
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AFCTCharacter::StartAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AFCTCharacter::EndAim);
+}
+
+bool AFCTCharacter::IsAim() const
+{
+	return WantsAim;
 }
 
 void AFCTCharacter::MoveForward(float AxisValue)

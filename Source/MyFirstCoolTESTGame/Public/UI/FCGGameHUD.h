@@ -6,18 +6,19 @@
 #include "GameFramework/HUD.h"
 #include "FCGGameHUD.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCGGameHUD : public AHUD
 {
 	GENERATED_BODY()
+	
+private:
 
 public:
 	virtual void DrawHUD() override;
 
-private:
+	void DrawCrossHair(const FVector2D& DrawPoint);
 	void DrawCrossHair();
-	
+
+	void DrawAimCollision(FVector& Point, float Distance) const;
 };

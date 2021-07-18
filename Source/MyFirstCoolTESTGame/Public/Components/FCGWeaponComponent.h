@@ -17,8 +17,8 @@ public:
 	// Sets default values for this component's properties
 	UFCGWeaponComponent();
 
-	void Fire();
-
+	void StartFire();
+	void EndFire();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

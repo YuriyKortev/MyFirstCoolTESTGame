@@ -3,6 +3,8 @@
 
 #include "Components/FCGWeaponComponent.h"
 
+#include "Player/FCTCharacter.h"
+
 #include "Weapon/FCGBaseWeapon.h"
 #include "GameFramework/Character.h"
 
@@ -14,11 +16,18 @@ UFCGWeaponComponent::UFCGWeaponComponent()
 
 }
 
-void UFCGWeaponComponent::Fire()
+void UFCGWeaponComponent::StartFire()
 {
 	if(!CurrentWeapon) return;
 
-	CurrentWeapon->Fire();
+	CurrentWeapon->StartFire();
+}
+
+void UFCGWeaponComponent::EndFire()
+{
+	if(!CurrentWeapon) return;
+
+	CurrentWeapon->EndFire();
 }
 
 
@@ -28,22 +37,23 @@ void UFCGWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SpawnWeapon();
-	
 }
 
 void UFCGWeaponComponent::SpawnWeapon()
 {
 	if(!GetWorld()) return;
 	
-	ACharacter* Owner = Cast<ACharacter>(GetOwner());
-	if(!Owner) return;
+	AFCTCharacter* WeaponOwner = Cast<AFCTCharacter>(GetOwner());
+	if(!WeaponOwner) return;
 
 	CurrentWeapon = GetWorld()->SpawnActor<AFCGBaseWeapon>(WeaponClass);
 
 	if(!CurrentWeapon) return;
 		
-	CurrentWeapon->AttachToComponent(Owner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
+	CurrentWeapon->AttachToComponent(WeaponOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
 		WeaponAttachPointName);
+
+	CurrentWeapon->SetWeaponOwner(WeaponOwner);
 	CurrentWeapon->SetOwner(GetOwner());
 }
 
