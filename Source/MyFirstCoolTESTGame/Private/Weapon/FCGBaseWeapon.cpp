@@ -71,6 +71,9 @@ void AFCGBaseWeapon::BeginPlay()
 
 void AFCGBaseWeapon::MakeShot()
 {
-		
+	if(!GetWorld()) return;
+	
+	UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
+	WeaponOwner->PlayAnimMontage(FireAnimMontage);
 }
 
