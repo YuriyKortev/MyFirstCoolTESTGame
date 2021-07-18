@@ -77,3 +77,7 @@ void AFCGBaseWeapon::MakeShot()
 	WeaponOwner->PlayAnimMontage(FireAnimMontage);
 }
 
+FVector AFCGBaseWeapon::GetMuzzleWorldLocation() const
+{
+	return WeaponMesh->GetSocketLocation(MuzzleSocketName);
+}

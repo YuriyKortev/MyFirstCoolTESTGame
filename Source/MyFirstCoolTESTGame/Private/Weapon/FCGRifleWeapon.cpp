@@ -87,11 +87,6 @@ bool AFCGRifleWeapon::GetPlayerViewPoint(FRotator& Rotator, FVector& Location) c
 	return true;
 }
 
-FVector AFCGRifleWeapon::GetMuzzleWorldLocation() const
-{
-	return WeaponMesh->GetSocketLocation(MuzzleSocketName);
-}
-
 bool AFCGRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 {
 	FRotator ViewRotation;

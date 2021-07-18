@@ -37,9 +37,11 @@ protected:
 	UPROPERTY()
 	AFCTCharacter* WeaponOwner;
 
+	bool WantsFire=false;
+
 	virtual void BeginPlay() override;
 
 	virtual void MakeShot();
 	
-	bool WantsFire=false;
+	FVector GetMuzzleWorldLocation() const;
 };
