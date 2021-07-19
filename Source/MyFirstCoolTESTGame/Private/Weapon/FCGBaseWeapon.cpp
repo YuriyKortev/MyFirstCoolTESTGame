@@ -8,6 +8,7 @@
 #include "GameFramework/Controller.h"
 
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/ArrowComponent.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -18,6 +19,9 @@ AFCGBaseWeapon::AFCGBaseWeapon()
 
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>("WeaponMesh");
 	SetRootComponent(WeaponMesh);
+
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>("ShootDirection");
+	ArrowComponent->SetupAttachment(GetRootComponent());
 }
 
 void AFCGBaseWeapon::StartFire()

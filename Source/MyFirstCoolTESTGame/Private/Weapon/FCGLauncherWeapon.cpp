@@ -4,6 +4,7 @@
 #include "Weapon/FCGLauncherWeapon.h"
 #include "Weapon/FCTProjectile.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/ArrowComponent.h"
 
 void AFCGLauncherWeapon::StartFire()
 {
@@ -23,8 +24,13 @@ void AFCGLauncherWeapon::MakeShot()
 
 	const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleWorldLocation());
 
-	auto Projectile = UGameplayStatics::BeginDeferredActorSpawnFromClass(GetWorld(), ProjectileClass, SpawnTransform);
-	// set params
+	auto Projectile = GetWorld()->SpawnActorDeferred<AFCTProjectile>(ProjectileClass, SpawnTransform);
+	
+	if(Projectile)
+	{
+		Projectile->SetShootDirection(ArrowComponent->GetForwardVector());
+		Projectile->SetOwner(GetOwner());
+		Projectile->FinishSpawning(SpawnTransform);
+	}
 
-	UGameplayStatics::FinishSpawningActor(Projectile, SpawnTransform);
 }

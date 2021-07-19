@@ -8,6 +8,7 @@
 
 class USkeletalMeshComponent;
 class AFCTCharacter;
+class UArrowComponent;
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
 
@@ -27,6 +28,9 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(VisibleDefaultsOnly, Category="Ammo")
+	UArrowComponent* ArrowComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Weapon")
 	FName MuzzleSocketName = "MuzzleSocket";
