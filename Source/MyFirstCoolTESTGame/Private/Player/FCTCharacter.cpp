@@ -86,6 +86,9 @@ void AFCTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	
 	PlayerInputComponent->BindAction("Aim", IE_Pressed, this, &AFCTCharacter::StartAim);
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AFCTCharacter::EndAim);
+
+	PlayerInputComponent->BindAction("ChangeWeapon", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::NextWeapon);
+
 }
 
 bool AFCTCharacter::IsAim() const
@@ -184,6 +187,8 @@ void AFCTCharacter::OnDeath()
 		Controller->ChangeState(NAME_Spectating);
 	}
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	
+	WeaponComponent->EndFire();
 }
 
 void AFCTCharacter::OnHealthChanged(float Health)

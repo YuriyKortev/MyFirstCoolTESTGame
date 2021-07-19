@@ -30,30 +30,62 @@ void UFCGWeaponComponent::EndFire()
 	CurrentWeapon->EndFire();
 }
 
+void UFCGWeaponComponent::NextWeapon()
+{
+	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+	EquipWeapon(CurrentWeaponIndex);
+}
+
 
 // Called when the game starts
 void UFCGWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	WeaponOwner = Cast<AFCTCharacter>(GetOwner());
 
-	SpawnWeapon();
+	SpawnWeapons();
+	EquipWeapon(CurrentWeaponIndex);
 }
 
-void UFCGWeaponComponent::SpawnWeapon()
+void UFCGWeaponComponent::AttachWeaponToSocket(AFCGBaseWeapon* Weapon, USceneComponent* Scene, const FName& SocketName)
 {
-	if(!GetWorld()) return;
-	
-	AFCTCharacter* WeaponOwner = Cast<AFCTCharacter>(GetOwner());
+	if(!Weapon || !Scene) return;
+	Weapon->AttachToComponent(Scene, FAttachmentTransformRules::SnapToTargetIncludingScale,
+		SocketName);
+}
+
+void UFCGWeaponComponent::SpawnWeapons()
+{
+	if(!GetWorld() || !WeaponOwner) return;
+
+	for(const auto WeaponClass : WeaponClasses)
+	{
+		const auto Weapon = GetWorld()->SpawnActor<AFCGBaseWeapon>(WeaponClass);
+
+		if(!Weapon) continue;
+		Weapon->SetWeaponOwner(WeaponOwner);
+		Weapon->SetOwner(GetOwner());
+
+		Weapons.Add(Weapon);
+
+		AttachWeaponToSocket(Weapon, WeaponOwner->GetMesh(), ArmoryAttachPointName);
+		
+	}
+
+}
+
+void UFCGWeaponComponent::EquipWeapon(int32 WeaponIndex)
+{
 	if(!WeaponOwner) return;
 
-	CurrentWeapon = GetWorld()->SpawnActor<AFCGBaseWeapon>(WeaponClass);
+	if(CurrentWeapon)
+	{
+		CurrentWeapon->EndFire();
+		AttachWeaponToSocket(CurrentWeapon, WeaponOwner->GetMesh(), ArmoryAttachPointName);
+	}
 
-	if(!CurrentWeapon) return;
-		
-	CurrentWeapon->AttachToComponent(WeaponOwner->GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale,
-		WeaponAttachPointName);
-
-	CurrentWeapon->SetWeaponOwner(WeaponOwner);
-	CurrentWeapon->SetOwner(GetOwner());
+	CurrentWeapon = Weapons[WeaponIndex];
+	AttachWeaponToSocket(CurrentWeapon, WeaponOwner->GetMesh(), WeaponAttachPointName);
 }
 

@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+
 #include "FCGWeaponComponent.generated.h"
 
 class AFCGBaseWeapon;
+class AFCTCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class MYFIRSTCOOLTESTGAME_API UFCGWeaponComponent : public UActorComponent
@@ -19,19 +21,33 @@ public:
 
 	void StartFire();
 	void EndFire();
+	void NextWeapon();
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	TSubclassOf<AFCGBaseWeapon> WeaponClass;
+	TArray<TSubclassOf<AFCGBaseWeapon>> WeaponClasses;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	FName WeaponAttachPointName = "Weapon";
+	
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	FName ArmoryAttachPointName = "ArmorySocket";
+
+	UPROPERTY()
+	AFCTCharacter* WeaponOwner;
 
 private:
 	UPROPERTY()
 	AFCGBaseWeapon* CurrentWeapon = nullptr;
-	
-	void SpawnWeapon();
+
+	UPROPERTY()
+	TArray<AFCGBaseWeapon*> Weapons;
+
+	int32 CurrentWeaponIndex = 0;
+
+	void AttachWeaponToSocket(AFCGBaseWeapon* Weapon, USceneComponent* Scene, const FName& SocketName);
+	void SpawnWeapons();
+	void EquipWeapon(int32 WeaponIndex);
 };
