@@ -34,9 +34,18 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	FName ArmoryAttachPointName = "ArmorySocket";
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
+	UAnimMontage* EquipAnimMontage;
 
 	UPROPERTY()
 	AFCTCharacter* WeaponOwner;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	bool CanShoot = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	bool Equiping = false;
 
 private:
 	UPROPERTY()
@@ -50,4 +59,10 @@ private:
 	void AttachWeaponToSocket(AFCGBaseWeapon* Weapon, USceneComponent* Scene, const FName& SocketName);
 	void SpawnWeapons();
 	void EquipWeapon(int32 WeaponIndex);
+
+	void PlayAnimMontage(UAnimMontage* AnimMontage) const;
+	void InitAnimations();
+
+	void OnEquipFinished(USkeletalMeshComponent* Mesh);
+	void OnChangeWeapon(USkeletalMeshComponent* Mesh);
 };
