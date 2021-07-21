@@ -72,6 +72,8 @@ void AFCGBaseWeapon::Tick(float DeltaSeconds)
 void AFCGBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+	checkf(DefaultAmmoData.Bullets > 0, TEXT("Bullets can't be less or equal zero"))
+	checkf(DefaultAmmoData.Clips > 0, TEXT("Clips can't be less or equal zero"))
 	check(WeaponMesh);
 	CurrentAmmoData = DefaultAmmoData;
 	InitAnimations();

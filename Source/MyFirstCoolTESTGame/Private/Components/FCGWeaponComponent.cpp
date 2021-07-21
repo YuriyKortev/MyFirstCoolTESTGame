@@ -13,6 +13,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All)
 
+constexpr int32 WeaponNum = 2;
 
 // Sets default values for this component's properties
 UFCGWeaponComponent::UFCGWeaponComponent()
@@ -40,6 +41,8 @@ void UFCGWeaponComponent::EndFire()
 void UFCGWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	checkf(WeaponClasses.Num() == WeaponNum, TEXT("Character should keep only %i weapons"), WeaponNum)
 	
 	WeaponOwner = Cast<AFCTCharacter>(GetOwner());
 
@@ -128,6 +131,7 @@ void UFCGWeaponComponent::InitAnimations()
 		{
 			EquipFinishedNotify->OnNotified.AddUObject(this, &UFCGWeaponComponent::OnEquipFinished);
 		}
+		
 		if(ChangeWeaponNotify)
 		{
 			ChangeWeaponNotify->OnNotified.AddUObject(this, &UFCGWeaponComponent::OnChangeWeapon);

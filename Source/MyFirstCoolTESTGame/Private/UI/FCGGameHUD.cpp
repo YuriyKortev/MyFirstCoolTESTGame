@@ -3,14 +3,24 @@
 
 #include "UI/FCGGameHUD.h"
 
-//#include "../../../../../../Epic Games/UE_4.26/Engine/Shaders/Private/ScreenSpaceDenoise/SSDPublicHarmonics.ush"
 #include "Engine/Canvas.h"
+#include "Blueprint/UserWidget.h"
 
 void AFCGGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
 	DrawCrossHair();
+}
+
+void AFCGGameHUD::BeginPlay()
+{
+	Super::BeginPlay();
+	auto PlayerHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHudWidgetClass);
+	if(PlayerHUDWidget)
+	{
+		PlayerHUDWidget->AddToViewport();
+	}
 }
 
 void AFCGGameHUD::DrawCrossHair(const FVector2D& DrawPoint)

@@ -83,7 +83,7 @@ void AFCGRifleWeapon::MakeShot()
 
 	if(HitResult.bBlockingHit)
 	{
-		UE_LOG(LogBaseWeapon, Display, TEXT("Hitted: %s"), *HitResult.BoneName.ToString());
+		// UE_LOG(LogBaseWeapon, Display, TEXT("Hitted: %s"), *HitResult.BoneName.ToString());
 		
 		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
 
