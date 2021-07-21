@@ -22,6 +22,18 @@ void AFCGLauncherWeapon::MakeShot()
 {
 	Super::MakeShot();
 
+	if(!GetWorld() || IsAmmoEmpty() || Reloading)
+	{
+		EndFire();
+		return;
+	}
+
+	if(IsClipEmpty())
+	{
+		StartReload();
+		return;
+	}
+
 	const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleWorldLocation());
 
 	auto Projectile = GetWorld()->SpawnActorDeferred<AFCTProjectile>(ProjectileClass, SpawnTransform);
@@ -32,5 +44,6 @@ void AFCGLauncherWeapon::MakeShot()
 		Projectile->SetOwner(GetOwner());
 		Projectile->FinishSpawning(SpawnTransform);
 	}
-
+	
+	DecreaseAmmo();
 }

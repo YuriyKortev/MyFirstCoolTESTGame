@@ -10,6 +10,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/ArrowComponent.h"
 
+#include "Animations/FCTReloadAnimNotify.h"
+
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -71,17 +73,85 @@ void AFCGBaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	check(WeaponMesh);
+	CurrentAmmoData = DefaultAmmoData;
+	InitAnimations();
 }
 
 void AFCGBaseWeapon::MakeShot()
 {
-	if(!GetWorld()) return;
 	
-	UE_LOG(LogBaseWeapon, Display, TEXT("FIRE"));
-	WeaponOwner->PlayAnimMontage(FireAnimMontage);
 }
 
 FVector AFCGBaseWeapon::GetMuzzleWorldLocation() const
 {
 	return WeaponMesh->GetSocketLocation(MuzzleSocketName);
+}
+
+void AFCGBaseWeapon::DecreaseAmmo()
+{	
+	CurrentAmmoData.Bullets--;
+	LogAmmo();
+}
+
+bool AFCGBaseWeapon::IsAmmoEmpty() const
+{
+	return !CurrentAmmoData.Infinite && CurrentAmmoData.Clips == 0 && IsClipEmpty();
+}
+
+bool AFCGBaseWeapon::IsClipEmpty() const
+{
+	return CurrentAmmoData.Bullets == 0;
+}
+
+int32 AFCGBaseWeapon::ClipsAvailable() const
+{
+	return CurrentAmmoData.Clips;
+}
+
+void AFCGBaseWeapon::StartReload()
+{
+	if(Reloading) return;
+	EndFire();
+	Reloading = true;
+	WeaponOwner->PlayAnimMontage(ReloadAnimMontage);
+	UE_LOG(LogBaseWeapon, Display, TEXT("Changing clip------------"))
+}
+
+void AFCGBaseWeapon::OnReloadFinished(USkeletalMeshComponent* Mesh)
+{
+	if(WeaponOwner->GetMesh() != Mesh) return;
+	
+	CurrentAmmoData.Bullets = DefaultAmmoData.Bullets;
+	if(!CurrentAmmoData.Infinite)
+	{
+		CurrentAmmoData.Clips--;
+	}
+	Reloading=false;
+}
+
+void AFCGBaseWeapon::LogAmmo()
+{
+	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmoData.Bullets) + "/";
+	AmmoInfo += CurrentAmmoData.Infinite ? "Infinite" : FString::FromInt(CurrentAmmoData.Clips);
+	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo)
+}
+
+bool AFCGBaseWeapon::IsFullAmmo() const
+{
+	return CurrentAmmoData.Bullets == DefaultAmmoData.Bullets;
+}
+
+void AFCGBaseWeapon::InitAnimations()
+{
+	if(!ReloadAnimMontage) return;
+    	
+    	const auto NotifyEvents = ReloadAnimMontage->Notifies;
+    	for(auto NotifyEvent : NotifyEvents)
+    	{
+    		const auto EquipFinishedNotify = Cast<UFCTReloadAnimNotify>(NotifyEvent.Notify);
+    		if(EquipFinishedNotify)
+    		{
+    			EquipFinishedNotify->OnNotified.AddUObject(this, &AFCGBaseWeapon::OnReloadFinished);
+    		}
+    	}
 }

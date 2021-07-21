@@ -77,6 +77,12 @@ void UFCGWeaponComponent::SpawnWeapons()
 
 void UFCGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+	if(WeaponIndex < 0 || WeaponIndex >= Weapons.Num())
+	{
+		UE_LOG(LogWeaponComponent, Warning, TEXT("Out of Weapons index"))
+		return;
+	}
+	
 	if(!WeaponOwner) return;
 
 	if(CurrentWeapon)
@@ -95,8 +101,13 @@ void UFCGWeaponComponent::NextWeapon()
 	
 	CanShoot = false;
 	Equiping = true;
-	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 	PlayAnimMontage(EquipAnimMontage);
+}
+
+void UFCGWeaponComponent::Reload()
+{
+	if(CurrentWeapon->ClipsAvailable() <= 0 || CurrentWeapon->IsFullAmmo()) return;
+	CurrentWeapon->StartReload();
 }
 
 void UFCGWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage) const
@@ -109,7 +120,7 @@ void UFCGWeaponComponent::InitAnimations()
 	if(!EquipAnimMontage) return;
 	
 	const auto NotifyEvents = EquipAnimMontage->Notifies;
-	for(auto NotifyEvent : NotifyEvents)
+	for(const auto NotifyEvent : NotifyEvents)
 	{
 		const auto EquipFinishedNotify = Cast<UFCTEquipFinishedAnimNotify>(NotifyEvent.Notify);
 		const auto ChangeWeaponNotify = Cast<UFCTChangeWeaponAnimNotify>(NotifyEvent.Notify);
@@ -138,6 +149,7 @@ void UFCGWeaponComponent::OnChangeWeapon(USkeletalMeshComponent* Mesh)
 {
 	if(WeaponOwner->GetMesh() != Mesh) return;
 
+	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 	EquipWeapon(CurrentWeaponIndex);
 }
 

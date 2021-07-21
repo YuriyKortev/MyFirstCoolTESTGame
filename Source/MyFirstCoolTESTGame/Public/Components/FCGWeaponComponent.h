@@ -22,6 +22,8 @@ public:
 	void StartFire();
 	void EndFire();
 	void NextWeapon();
+	void Reload();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

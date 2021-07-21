@@ -8,6 +8,8 @@
 
 void AFCGRifleWeapon::StartFire()
 {
+	if(Reloading) return;
+	
 	Super::StartFire();
 
 	switch (FireType)
@@ -43,11 +45,32 @@ void AFCGRifleWeapon::BeginPlay()
 void AFCGRifleWeapon::MakeShot()
 {
 	Super::MakeShot();
+
+	if(!GetWorld() || IsAmmoEmpty())
+	{
+		EndFire();
+		return;
+	}
+
+	if(IsClipEmpty() && !IsAmmoEmpty())
+	{
+		if(FirstBulletsEmpty)
+		{
+			EndFire();
+			FirstBulletsEmpty=false;
+			return;
+		}
+		StartReload();
+		FirstBulletsEmpty=true;
+		return;
+	}
 	
 	if(FireType == EFireType::Burst && ShootNum > NumOfShotsInBurst)
 		return;
 	else if(FireType == EFireType::Burst)
 		ShootNum++;
+	
+	WeaponOwner->PlayAnimMontage(FireAnimMontage);
 
 	// const FTransform SocketTransform = WeaponMesh->GetSocketTransform(MuzzleSocketName);
 	FVector TraceStart;
@@ -72,6 +95,8 @@ void AFCGRifleWeapon::MakeShot()
 	{
 		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
 	}
+
+	DecreaseAmmo();
 }
 
 APlayerController* AFCGRifleWeapon::GetPlayerController() const

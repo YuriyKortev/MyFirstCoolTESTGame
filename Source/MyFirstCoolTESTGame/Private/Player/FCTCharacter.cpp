@@ -88,6 +88,7 @@ void AFCTCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	PlayerInputComponent->BindAction("Aim", IE_Released, this, &AFCTCharacter::EndAim);
 
 	PlayerInputComponent->BindAction("ChangeWeapon", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent, &UFCGWeaponComponent::Reload);
 
 }
 

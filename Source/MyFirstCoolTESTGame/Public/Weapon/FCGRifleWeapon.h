@@ -58,4 +58,7 @@ protected:
 	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd) const;
 	
 	void MakeDamage(const FHitResult& HitResult) const;
+
+private:
+	bool FirstBulletsEmpty = true;
 };
