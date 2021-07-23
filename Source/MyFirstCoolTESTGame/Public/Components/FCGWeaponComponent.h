@@ -26,6 +26,7 @@ public:
 	void Reload();
 
 	bool GetCurrentUIData(FWeaponUIData& OutUIData) const;
+	bool GetCurrentAmmoData(FAmmoData& OutAmmoData) const;
 	FString GetTextCurrentAmmo() const;
 
 protected:

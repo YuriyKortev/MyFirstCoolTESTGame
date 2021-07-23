@@ -64,6 +64,7 @@ public:
 	bool IsFullAmmo() const;
 
 	FWeaponUIData GetUIData() const { return UIData; }
+	FAmmoData GetCurrentAmmoData() const { return CurrentAmmoData; }
 
 	void SetWeaponOwner(AFCTCharacter* NewOwner) { WeaponOwner = NewOwner; }
 	
@@ -93,7 +94,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimMontage* ReloadAnimMontage;
 
-	UPROPERTY()
 	AFCTCharacter* WeaponOwner;
 
 	bool WantsFire=false;

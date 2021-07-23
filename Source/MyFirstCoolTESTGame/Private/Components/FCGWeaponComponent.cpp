@@ -125,6 +125,18 @@ bool UFCGWeaponComponent::GetCurrentUIData(FWeaponUIData& OutUIData) const
 	}
 }
 
+bool UFCGWeaponComponent::GetCurrentAmmoData(FAmmoData& OutAmmoData) const
+{
+	if(CurrentWeapon)
+	{
+		OutAmmoData = CurrentWeapon->GetCurrentAmmoData();
+		return true;
+	}else
+	{
+		return false;
+	}
+}
+
 FString UFCGWeaponComponent::GetTextCurrentAmmo() const
 {
 	if(!CurrentWeapon) return "0 / 0";

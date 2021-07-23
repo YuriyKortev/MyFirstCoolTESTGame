@@ -40,9 +40,24 @@ bool UFCTPlayerHudWidget::GetCurrentWeaponUIData(FWeaponUIData& OutUIData) const
 	return WeaponComponent->GetCurrentUIData(OutUIData);
 }
 
-FString UFCTPlayerHudWidget::GetCurrentWeaponAmmoData() const
+bool UFCTPlayerHudWidget::GetCurrentAmmoData(FAmmoData& OutAmmoData) const
 {
-	if(!WeaponComponent) return "0 / 0";
+	if(!WeaponComponent) return false;
 	
-	return WeaponComponent->GetTextCurrentAmmo();
+	return WeaponComponent->GetCurrentAmmoData(OutAmmoData);
 }
+
+bool UFCTPlayerHudWidget::IsPlayerAlive() const
+{
+	if(!HealthComponent) return false;
+
+	return !HealthComponent->IsDead();
+}
+
+bool UFCTPlayerHudWidget::IsPlayerSpectating() const
+{
+	const auto Controller = GetOwningPlayer();
+
+	return Controller && Controller->GetStateName() == NAME_Spectating;
+}
+

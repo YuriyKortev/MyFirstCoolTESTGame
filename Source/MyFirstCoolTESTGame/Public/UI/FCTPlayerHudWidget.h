@@ -27,7 +27,13 @@ public:
 	bool GetCurrentWeaponUIData(FWeaponUIData& OutUIData) const;
 
 	UFUNCTION(BlueprintCallable, Category="Ammo")
-	FString GetCurrentWeaponAmmoData() const;
+	bool GetCurrentAmmoData(FAmmoData& OutAmmoData) const;
+
+	UFUNCTION(BlueprintCallable, Category="Character")
+	bool IsPlayerAlive() const;
+
+	UFUNCTION(BlueprintCallable, Category="Character")
+	bool IsPlayerSpectating() const;
 
 protected:
 	UPROPERTY()
