@@ -60,8 +60,9 @@ void AFCGRifleWeapon::MakeShot()
 			FirstBulletsEmpty=false;
 			return;
 		}
-		StartReload();
 		FirstBulletsEmpty=true;
+		EndFire();
+		StartReload();
 		return;
 	}
 	

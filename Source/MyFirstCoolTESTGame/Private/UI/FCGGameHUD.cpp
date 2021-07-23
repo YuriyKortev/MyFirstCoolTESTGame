@@ -10,7 +10,7 @@ void AFCGGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	DrawCrossHair();
+	// DrawCrossHair();
 }
 
 void AFCGGameHUD::BeginPlay()

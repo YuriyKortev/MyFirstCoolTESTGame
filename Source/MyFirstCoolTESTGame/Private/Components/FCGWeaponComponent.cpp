@@ -113,6 +113,25 @@ void UFCGWeaponComponent::Reload()
 	CurrentWeapon->StartReload();
 }
 
+bool UFCGWeaponComponent::GetCurrentUIData(FWeaponUIData& OutUIData) const
+{
+	if(CurrentWeapon)
+	{
+		OutUIData = CurrentWeapon->GetUIData();
+		return true;
+	}else
+	{
+		return false;
+	}
+}
+
+FString UFCGWeaponComponent::GetTextCurrentAmmo() const
+{
+	if(!CurrentWeapon) return "0 / 0";
+
+	return CurrentWeapon->GetTextCurrentAmmo();
+}
+
 void UFCGWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage) const
 {
 	WeaponOwner->PlayAnimMontage(AnimMontage);

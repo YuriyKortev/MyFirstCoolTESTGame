@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Weapon/FCGBaseWeapon.h"
 
 #include "FCGWeaponComponent.generated.h"
 
@@ -23,6 +24,9 @@ public:
 	void EndFire();
 	void NextWeapon();
 	void Reload();
+
+	bool GetCurrentUIData(FWeaponUIData& OutUIData) const;
+	FString GetTextCurrentAmmo() const;
 
 protected:
 	// Called when the game starts

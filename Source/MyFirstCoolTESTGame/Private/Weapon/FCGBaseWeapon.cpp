@@ -138,6 +138,11 @@ void AFCGBaseWeapon::LogAmmo()
 	UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo)
 }
 
+FString AFCGBaseWeapon::GetTextCurrentAmmo() const
+{
+	return FString::Printf(TEXT("%i / %i"), CurrentAmmoData.Bullets, CurrentAmmoData.Clips);
+}
+
 bool AFCGBaseWeapon::IsFullAmmo() const
 {
 	return CurrentAmmoData.Bullets == DefaultAmmoData.Bullets;

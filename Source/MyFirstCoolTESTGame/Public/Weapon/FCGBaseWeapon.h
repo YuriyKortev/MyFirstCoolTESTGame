@@ -28,6 +28,18 @@ struct FAmmoData
 	
 };
 
+USTRUCT(BlueprintType)
+struct FWeaponUIData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+	UTexture2D* MainIcon;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+	UTexture2D* CrossHairIcon;
+};
+
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCGBaseWeapon : public AActor
 {
@@ -47,7 +59,11 @@ public:
 	int32 ClipsAvailable() const;
 	void LogAmmo();
 
+	FString GetTextCurrentAmmo() const;
+
 	bool IsFullAmmo() const;
+
+	FWeaponUIData GetUIData() const { return UIData; }
 
 	void SetWeaponOwner(AFCTCharacter* NewOwner) { WeaponOwner = NewOwner; }
 	
@@ -58,6 +74,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Ammo")
 	FAmmoData DefaultAmmoData{25, 10, false};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
+	FWeaponUIData UIData;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
