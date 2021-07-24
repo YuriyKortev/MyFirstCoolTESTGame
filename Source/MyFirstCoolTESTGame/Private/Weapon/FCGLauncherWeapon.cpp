@@ -22,15 +22,9 @@ void AFCGLauncherWeapon::MakeShot()
 {
 	Super::MakeShot();
 
-	if(!GetWorld() || IsAmmoEmpty() || Reloading)
-	{
-		EndFire();
-		return;
-	}
-
 	if(IsClipEmpty())
 	{
-		StartReload();
+		OnBulletsEmpty.Broadcast();
 		return;
 	}
 

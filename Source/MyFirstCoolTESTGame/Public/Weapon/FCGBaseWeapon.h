@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "FCGBaseWeapon.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnBulletsEmpty)
+
 class USkeletalMeshComponent;
 class AFCTCharacter;
 class UArrowComponent;
@@ -51,7 +53,6 @@ public:
 	virtual void StartFire();
 	virtual void EndFire();
 	
-	void StartReload();
 	void OnReloadFinished(USkeletalMeshComponent* Mesh);
 	
 	bool IsAmmoEmpty() const;
@@ -70,6 +71,8 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Ammo")
 	bool Reloading = false;
+
+	FOnBulletsEmpty OnBulletsEmpty;
 
 
 protected:
@@ -90,9 +93,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimMontage* FireAnimMontage;
-	
-	UPROPERTY(EditAnywhere, Category="Animation")
-	UAnimMontage* ReloadAnimMontage;
 
 	AFCTCharacter* WeaponOwner;
 
@@ -108,6 +108,4 @@ protected:
 
 private:
 	FAmmoData CurrentAmmoData;
-
-	void InitAnimations();
 };

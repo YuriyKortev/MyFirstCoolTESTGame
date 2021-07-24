@@ -1,7 +1,8 @@
 // MyFirstCoolTESTGame. All rights RESRVED!
 
-#include "Engine/World.h"
 #include "Weapon/FCGBaseWeapon.h"
+
+#include "Engine/World.h"
 #include "Player/FCTCharacter.h"
 
 #include "GameFramework/Character.h"
@@ -9,8 +10,6 @@
 
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/ArrowComponent.h"
-
-#include "Animations/FCTReloadAnimNotify.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -76,7 +75,6 @@ void AFCGBaseWeapon::BeginPlay()
 	checkf(DefaultAmmoData.Clips > 0, TEXT("Clips can't be less or equal zero"))
 	check(WeaponMesh);
 	CurrentAmmoData = DefaultAmmoData;
-	InitAnimations();
 }
 
 void AFCGBaseWeapon::MakeShot()
@@ -110,14 +108,6 @@ int32 AFCGBaseWeapon::ClipsAvailable() const
 	return CurrentAmmoData.Clips;
 }
 
-void AFCGBaseWeapon::StartReload()
-{
-	if(Reloading) return;
-	EndFire();
-	Reloading = true;
-	WeaponOwner->PlayAnimMontage(ReloadAnimMontage);
-	UE_LOG(LogBaseWeapon, Display, TEXT("Changing clip------------"))
-}
 
 void AFCGBaseWeapon::OnReloadFinished(USkeletalMeshComponent* Mesh)
 {
@@ -146,19 +136,4 @@ FString AFCGBaseWeapon::GetTextCurrentAmmo() const
 bool AFCGBaseWeapon::IsFullAmmo() const
 {
 	return CurrentAmmoData.Bullets == DefaultAmmoData.Bullets;
-}
-
-void AFCGBaseWeapon::InitAnimations()
-{
-	if(!ReloadAnimMontage) return;
-    	
-    	const auto NotifyEvents = ReloadAnimMontage->Notifies;
-    	for(auto NotifyEvent : NotifyEvents)
-    	{
-    		const auto EquipFinishedNotify = Cast<UFCTReloadAnimNotify>(NotifyEvent.Notify);
-    		if(EquipFinishedNotify)
-    		{
-    			EquipFinishedNotify->OnNotified.AddUObject(this, &AFCGBaseWeapon::OnReloadFinished);
-    		}
-    	}
 }

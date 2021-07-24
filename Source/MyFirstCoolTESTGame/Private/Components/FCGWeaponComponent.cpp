@@ -10,6 +10,7 @@
 
 #include "Animations/FCTEquipFinishedAnimNotify.h"
 #include "Animations/FCTChangeWeaponAnimNotify.h"
+#include "Animations/FCTReloadAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All)
 
@@ -24,7 +25,7 @@ UFCGWeaponComponent::UFCGWeaponComponent()
 
 void UFCGWeaponComponent::StartFire()
 {
-	if(!CurrentWeapon || !CanShoot) return;
+	if(!GetWorld() || !IsReadyShoot()) return;
 
 	CurrentWeapon->StartFire();
 }
@@ -70,6 +71,8 @@ void UFCGWeaponComponent::SpawnWeapons()
 		Weapon->SetWeaponOwner(WeaponOwner);
 		Weapon->SetOwner(GetOwner());
 
+		Weapon->OnBulletsEmpty.AddUObject(this, &UFCGWeaponComponent::Reload);
+
 		Weapons.Add(Weapon);
 
 		AttachWeaponToSocket(Weapon, WeaponOwner->GetMesh(), ArmoryAttachPointName);
@@ -100,17 +103,19 @@ void UFCGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
 void UFCGWeaponComponent::NextWeapon()
 {
-	if(Equiping) return;
+	if(Equiping || CurrentWeapon->Reloading) return;
 	
-	CanShoot = false;
 	Equiping = true;
 	PlayAnimMontage(EquipAnimMontage);
 }
 
 void UFCGWeaponComponent::Reload()
 {
-	if(CurrentWeapon->ClipsAvailable() <= 0 || CurrentWeapon->IsFullAmmo()) return;
-	CurrentWeapon->StartReload();
+	if(CurrentWeapon->ClipsAvailable() <= 0 || CurrentWeapon->IsFullAmmo()
+		|| CurrentWeapon->Reloading || Equiping) return;
+	
+	CurrentWeapon->Reloading = true;
+	WeaponOwner->PlayAnimMontage(ReloadAnimMontage);
 }
 
 bool UFCGWeaponComponent::GetCurrentUIData(FWeaponUIData& OutUIData) const
@@ -153,8 +158,8 @@ void UFCGWeaponComponent::InitAnimations()
 {
 	if(!EquipAnimMontage) return;
 	
-	const auto NotifyEvents = EquipAnimMontage->Notifies;
-	for(const auto NotifyEvent : NotifyEvents)
+	const auto EquipNotifyEvents = EquipAnimMontage->Notifies;
+	for(const auto NotifyEvent : EquipNotifyEvents)
 	{
 		const auto EquipFinishedNotify = Cast<UFCTEquipFinishedAnimNotify>(NotifyEvent.Notify);
 		const auto ChangeWeaponNotify = Cast<UFCTChangeWeaponAnimNotify>(NotifyEvent.Notify);
@@ -168,13 +173,24 @@ void UFCGWeaponComponent::InitAnimations()
 			ChangeWeaponNotify->OnNotified.AddUObject(this, &UFCGWeaponComponent::OnChangeWeapon);
 		}
 	}
+	
+	if(!ReloadAnimMontage) return;
+
+	const auto ReloadNotifyEvents = ReloadAnimMontage->Notifies;
+	for(auto NotifyEvent : ReloadNotifyEvents)
+	{
+		const auto ReloadFinishedNotify = Cast<UFCTReloadAnimNotify>(NotifyEvent.Notify);
+		if(ReloadFinishedNotify)
+		{
+			ReloadFinishedNotify->OnNotified.AddUObject(this, &UFCGWeaponComponent::ReloadFinished);
+		}
+	}
 }
 
 void UFCGWeaponComponent::OnEquipFinished(USkeletalMeshComponent* Mesh)
 {
 	if(WeaponOwner->GetMesh() != Mesh) return;
 	
-	CanShoot = true;
 	Equiping = false;
 	
 	UE_LOG(LogWeaponComponent, Display, TEXT("EquipFinished"))
@@ -186,5 +202,15 @@ void UFCGWeaponComponent::OnChangeWeapon(USkeletalMeshComponent* Mesh)
 
 	CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
 	EquipWeapon(CurrentWeaponIndex);
+}
+
+bool UFCGWeaponComponent::IsReadyShoot() const
+{
+	return !Equiping && !CurrentWeapon->Reloading && !CurrentWeapon->IsAmmoEmpty();
+}
+
+void UFCGWeaponComponent::ReloadFinished(USkeletalMeshComponent* Mesh) const
+{
+	CurrentWeapon->OnReloadFinished(Mesh);
 }
 

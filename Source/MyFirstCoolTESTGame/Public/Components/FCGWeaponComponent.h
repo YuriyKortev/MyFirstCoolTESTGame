@@ -44,13 +44,13 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimMontage* EquipAnimMontage;
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
+	UAnimMontage* ReloadAnimMontage;
 
 	UPROPERTY()
 	AFCTCharacter* WeaponOwner;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
-	bool CanShoot = true;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	bool Equiping = false;
 
@@ -72,4 +72,8 @@ private:
 
 	void OnEquipFinished(USkeletalMeshComponent* Mesh);
 	void OnChangeWeapon(USkeletalMeshComponent* Mesh);
+
+	bool IsReadyShoot() const;
+
+	void ReloadFinished(USkeletalMeshComponent* Mesh) const;
 };

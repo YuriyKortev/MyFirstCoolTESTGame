@@ -46,12 +46,6 @@ void AFCGRifleWeapon::MakeShot()
 {
 	Super::MakeShot();
 
-	if(!GetWorld() || IsAmmoEmpty())
-	{
-		EndFire();
-		return;
-	}
-
 	if(IsClipEmpty() && !IsAmmoEmpty())
 	{
 		if(FirstBulletsEmpty)
@@ -62,7 +56,7 @@ void AFCGRifleWeapon::MakeShot()
 		}
 		FirstBulletsEmpty=true;
 		EndFire();
-		StartReload();
+		OnBulletsEmpty.Broadcast();
 		return;
 	}
 	
