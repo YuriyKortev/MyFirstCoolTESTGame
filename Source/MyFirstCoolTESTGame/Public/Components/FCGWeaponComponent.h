@@ -29,6 +29,9 @@ public:
 	bool GetCurrentAmmoData(FAmmoData& OutAmmoData) const;
 	FString GetTextCurrentAmmo() const;
 
+	void AddCurrentWeaponClips(int32 ClipsAmount) const;
+	bool TryToAddClipsTo(TSubclassOf<AFCGBaseWeapon> WeaponType, int32 ClipsAmount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

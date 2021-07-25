@@ -149,6 +149,23 @@ FString UFCGWeaponComponent::GetTextCurrentAmmo() const
 	return CurrentWeapon->GetTextCurrentAmmo();
 }
 
+void UFCGWeaponComponent::AddCurrentWeaponClips(int32 ClipsAmount) const
+{
+	CurrentWeapon->TryAddClips(ClipsAmount);
+}
+
+bool UFCGWeaponComponent::TryToAddClipsTo(TSubclassOf<AFCGBaseWeapon> WeaponType, int32 ClipsAmount)
+{
+	for(const auto Weapon : Weapons)
+	{
+		if(Weapon && Weapon->IsA(WeaponType))
+		{
+			return Weapon->TryAddClips(ClipsAmount);
+		}
+	}
+	return false;
+}
+
 void UFCGWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage) const
 {
 	WeaponOwner->PlayAnimMontage(AnimMontage);

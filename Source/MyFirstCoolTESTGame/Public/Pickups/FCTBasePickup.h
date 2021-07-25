@@ -34,5 +34,8 @@ public:
 	FOnPickupTaken OnPickupTaken;
 
 private:
+	float RotationYaw = 0.0f;
+	
 	virtual bool GivePickupTo(APawn* PlayerPawn);
+	void GenerateRotationYaw();
 };

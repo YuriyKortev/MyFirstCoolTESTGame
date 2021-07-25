@@ -74,6 +74,8 @@ public:
 
 	FOnBulletsEmpty OnBulletsEmpty;
 
+	bool TryAddClips(int32 ClipsAmount);
+
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Ammo")

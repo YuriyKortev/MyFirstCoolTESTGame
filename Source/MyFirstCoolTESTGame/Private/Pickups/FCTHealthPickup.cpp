@@ -2,9 +2,15 @@
 
 
 #include "Pickups/FCTHealthPickup.h"
+#include "Components/FCGHealthComponent.h"
+#include "FCTUtils.h"
 
 bool AFCTHealthPickup::GivePickupTo(APawn* PlayerPawn)
 {
-	
-	return true;
+	const auto HealthComponent = FCTUtils::GetFCTPlayerComponent<UFCGHealthComponent>(PlayerPawn);
+	if(HealthComponent && HealthComponent->TryAddHealth(HealthRestore))
+	{
+		return true;
+	}
+	return false;
 }

@@ -135,5 +135,13 @@ FString AFCGBaseWeapon::GetTextCurrentAmmo() const
 
 bool AFCGBaseWeapon::IsFullAmmo() const
 {
-	return CurrentAmmoData.Bullets == DefaultAmmoData.Bullets;
+	return CurrentAmmoData.Bullets == DefaultAmmoData.Bullets &&
+		(CurrentAmmoData.Clips == DefaultAmmoData.Clips || CurrentAmmoData.Infinite);
+}
+
+bool AFCGBaseWeapon::TryAddClips(int32 ClipsAmount)
+{
+	if(IsFullAmmo() || CurrentAmmoData.Infinite) return false;
+	CurrentAmmoData.Clips = FMath::Clamp(CurrentAmmoData.Clips + ClipsAmount, 0, DefaultAmmoData.Clips);
+	return true;
 }

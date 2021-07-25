@@ -17,6 +17,14 @@ UFCGHealthComponent::UFCGHealthComponent()
 }
 
 
+bool UFCGHealthComponent::TryAddHealth(float HealthAmount)
+{
+	if(IsDead() || IsFullHealth()) return false;
+
+	SetHealth(Health + HealthAmount);
+	return true;
+}
+
 // Called when the game starts
 void UFCGHealthComponent::BeginPlay()
 {

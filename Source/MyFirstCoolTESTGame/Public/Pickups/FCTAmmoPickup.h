@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Pickups/FCTBasePickup.h"
+
 #include "FCTAmmoPickup.generated.h"
 
 class AFCGBaseWeapon;
@@ -18,7 +19,7 @@ class MYFIRSTCOOLTESTGAME_API AFCTAmmoPickup : public AFCTBasePickup
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup", meta=(ClampMin="1.0", ClampMax="10.0"))
-	int32 ClipsAmount = 10.0f;
+	int32 ClipsAmount = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Pickup", meta=(ClampMin="1.0", ClampMax="10.0"))
 	TSubclassOf<AFCGBaseWeapon> WeaponType;
