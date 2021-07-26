@@ -3,8 +3,14 @@
 
 #include "Weapon/FCGRifleWeapon.h"
 #include "Player/FCTCharacter.h"
+#include "Weapon/Components/FCTWeaponFXComponent.h"
 
 #include "DrawDebugHelpers.h"
+
+AFCGRifleWeapon::AFCGRifleWeapon()
+{
+	ImpactFXComponent = CreateDefaultSubobject<UFCTWeaponFXComponent>("WeaponFXComponent");
+}
 
 void AFCGRifleWeapon::StartFire()
 {
@@ -32,6 +38,7 @@ void AFCGRifleWeapon::StartFire()
 
 void AFCGRifleWeapon::EndFire()
 {
+	Super::EndFire();
 	GetWorldTimerManager().ClearTimer(FireTimer);
 	ShootNum=0;
 }
@@ -40,6 +47,7 @@ void AFCGRifleWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	check(ImpactFXComponent);
 }
 
 void AFCGRifleWeapon::MakeShot()
@@ -82,8 +90,9 @@ void AFCGRifleWeapon::MakeShot()
 		
 		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
 
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-
+		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
+		ImpactFXComponent->PlayImpactFX(HitResult);
+		
 		MakeDamage(HitResult);
 	}
 	else

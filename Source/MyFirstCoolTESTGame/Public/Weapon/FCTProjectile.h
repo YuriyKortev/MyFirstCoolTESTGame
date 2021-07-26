@@ -7,6 +7,7 @@
 #include "FCTProjectile.generated.h"
 
 class USphereComponent;
+class UFCTWeaponFXComponent;
 class UProjectileMovementComponent;
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 	void SetShootDirection(const FVector& Direction){ ShootDirection = Direction; }
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	UFCTWeaponFXComponent* WeaponFXComponent;
+	
 	UPROPERTY(VisibleDefaultsOnly, Category="Weapon")
 	USphereComponent* SphereComponent;
 

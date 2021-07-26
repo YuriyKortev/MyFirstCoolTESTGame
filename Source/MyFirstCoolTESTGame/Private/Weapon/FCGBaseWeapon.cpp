@@ -11,6 +11,9 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/ArrowComponent.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -23,16 +26,29 @@ AFCGBaseWeapon::AFCGBaseWeapon()
 
 	ArrowComponent = CreateDefaultSubobject<UArrowComponent>("ShootDirection");
 	ArrowComponent->SetupAttachment(GetRootComponent());
+	
+	MuzzleFXComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
+	ArrowComponent->SetupAttachment(GetRootComponent());
+	MuzzleFXComponent->bAutoActivate = false;
+	MuzzleFXComponent->bAutoManageAttachment = true;
+
+	MuzzleFXComponent->SetAutoAttachmentParameters(GetRootComponent(), MuzzleSocketName,
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget);
 }
 
 void AFCGBaseWeapon::StartFire()
 {
 	WantsFire = true;
+	
+	MuzzleFXComponent->Activate();
 }
 
 void AFCGBaseWeapon::EndFire()
 {
 	WantsFire = false;
+	MuzzleFXComponent->Deactivate();
 }
 
 /*
@@ -74,6 +90,7 @@ void AFCGBaseWeapon::BeginPlay()
 	checkf(DefaultAmmoData.Bullets > 0, TEXT("Bullets can't be less or equal zero"))
 	checkf(DefaultAmmoData.Clips > 0, TEXT("Clips can't be less or equal zero"))
 	check(WeaponMesh);
+	
 	CurrentAmmoData = DefaultAmmoData;
 }
 
@@ -92,6 +109,19 @@ void AFCGBaseWeapon::DecreaseAmmo()
 	CurrentAmmoData.Bullets--;
 	LogAmmo();
 }
+
+/*
+UNiagaraComponent* AFCGBaseWeapon::SpawnMuzzleFX() const
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX, //
+		WeaponMesh, //
+		MuzzleSocketName, //
+		FVector::ZeroVector,//
+		FRotator::ZeroRotator, //
+		EAttachLocation::SnapToTarget, //
+		true);
+}
+*/
 
 bool AFCGBaseWeapon::IsAmmoEmpty() const
 {

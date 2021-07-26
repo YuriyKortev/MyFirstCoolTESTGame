@@ -38,6 +38,7 @@ AFCTCharacter::AFCTCharacter()
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 
 	WeaponComponent = CreateDefaultSubobject<UFCGWeaponComponent>("WeaponComponent");
+
 }
 
 // Called when the game starts or when spawned

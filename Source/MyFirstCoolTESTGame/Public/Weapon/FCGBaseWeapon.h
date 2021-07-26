@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Actor.h"
 #include "FCGBaseWeapon.generated.h"
 
@@ -11,6 +12,7 @@ DECLARE_MULTICAST_DELEGATE(FOnBulletsEmpty)
 class USkeletalMeshComponent;
 class AFCTCharacter;
 class UArrowComponent;
+class UNiagaraComponent;
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All)
 
@@ -78,13 +80,16 @@ public:
 
 
 protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	UNiagaraComponent* MuzzleFXComponent;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Ammo")
 	FAmmoData DefaultAmmoData{25, 10, false};
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="UI")
 	FWeaponUIData UIData;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Ammo")
@@ -108,6 +113,9 @@ protected:
 
 	void DecreaseAmmo();
 
+	//UNiagaraComponent* SpawnMuzzleFX() const; //delete
+
 private:
+	
 	FAmmoData CurrentAmmoData;
 };

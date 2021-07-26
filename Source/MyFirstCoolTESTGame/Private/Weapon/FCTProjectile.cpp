@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Weapon/Components/FCTWeaponFXComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -21,6 +22,8 @@ AFCTProjectile::AFCTProjectile()
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>("ProjectileMovement");
 
+	WeaponFXComponent = CreateDefaultSubobject<UFCTWeaponFXComponent>("WeaponFXComponent");
+
 }
 
 void AFCTProjectile::BeginPlay()
@@ -28,6 +31,7 @@ void AFCTProjectile::BeginPlay()
 	Super::BeginPlay();
 	check(SphereComponent);
 	check(ProjectileMovement);
+	check(WeaponFXComponent);
 	
 	ProjectileMovement->Velocity = ShootDirection * ProjectileMovement->InitialSpeed;
 
@@ -43,6 +47,8 @@ void AFCTProjectile::OnCollision(UPrimitiveComponent* HitComponent, AActor* Othe
 
 	ProjectileMovement->StopMovementImmediately();
 
+	WeaponFXComponent->PlayImpactFX(Hit);
+	
 	// add damage
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageValue, GetActorLocation(), DamageRadius,
 		UDamageType::StaticClass(), {GetOwner()}, this, GetController(), DoFullDamage);

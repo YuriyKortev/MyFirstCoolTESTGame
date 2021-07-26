@@ -8,6 +8,12 @@
 
 void AFCGLauncherWeapon::StartFire()
 {
+	if(IsClipEmpty())
+	{
+		OnBulletsEmpty.Broadcast();
+		return;
+	}
+	
 	Super::StartFire();
 	MakeShot();
 }
@@ -21,12 +27,6 @@ void AFCGLauncherWeapon::EndFire()
 void AFCGLauncherWeapon::MakeShot()
 {
 	Super::MakeShot();
-
-	if(IsClipEmpty())
-	{
-		OnBulletsEmpty.Broadcast();
-		return;
-	}
 
 	const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleWorldLocation());
 

@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Components/FCTWeaponFXComponent.h"
 #include "Weapon/FCGBaseWeapon.h"
 #include "FCGRifleWeapon.generated.h"
+
+class UFCTWeaponFXComponent;
 
 UENUM(BlueprintType)
 enum class EFireType : uint8
@@ -21,6 +25,8 @@ class MYFIRSTCOOLTESTGAME_API AFCGRifleWeapon : public AFCGBaseWeapon
 	GENERATED_BODY()
 
 public:
+	AFCGRifleWeapon();
+	
 	virtual void StartFire() override;
 	virtual void EndFire() override;
 
@@ -29,7 +35,8 @@ protected:
 
 	virtual void MakeShot() override;
 
-	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	UFCTWeaponFXComponent* ImpactFXComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
 	float TraceMaxDistance = 1500.0f;
@@ -60,5 +67,6 @@ protected:
 	void MakeDamage(const FHitResult& HitResult) const;
 
 private:
+	
 	bool FirstBulletsEmpty = true;
 };
