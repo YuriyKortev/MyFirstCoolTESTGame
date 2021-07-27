@@ -49,6 +49,7 @@ void AFCTCharacter::BeginPlay()
 	check(HealthComponent);
 	check(HealthTextComponent);
 	check(GetCharacterMovement());
+	check(GetMesh());
 
 	OnHealthChanged(HealthComponent->GetHealth());
 	HealthComponent->OnDeath.AddUObject(this, &AFCTCharacter::OnDeath);
@@ -178,7 +179,7 @@ void AFCTCharacter::OnDeath()
 	if(IsAlreadyDead) return;
 	IsAlreadyDead = true;
 	
-	PlayAnimMontage(DeathAnimMontage);
+	// PlayAnimMontage(DeathAnimMontage);
 
 	GetCharacterMovement()->DisableMovement();
 
@@ -191,6 +192,9 @@ void AFCTCharacter::OnDeath()
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	
 	WeaponComponent->EndFire();
+
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetSimulatePhysics(true);
 }
 
 void AFCTCharacter::OnHealthChanged(float Health)

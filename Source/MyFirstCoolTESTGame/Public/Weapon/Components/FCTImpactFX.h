@@ -7,6 +7,8 @@
 #include "FCTImpactFX.generated.h"
 
 class UNiagaraComponent;
+class UDecalComponent;
+class USceneComponent;
 
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCTImpactFX : public AActor
@@ -23,8 +25,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Transform")
+	USceneComponent* SceneComponent;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
 	UNiagaraComponent* ImpactFX;
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	UDecalComponent* DecalComponent;
 };
