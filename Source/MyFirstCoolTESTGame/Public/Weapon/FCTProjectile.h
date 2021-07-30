@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "GameFramework/Actor.h"
 #include "FCTProjectile.generated.h"
 
 class USphereComponent;
 class UFCTWeaponFXComponent;
 class UProjectileMovementComponent;
+class UNiagaraComponent;
 
 UCLASS()
 class MYFIRSTCOOLTESTGAME_API AFCTProjectile : public AActor
@@ -24,19 +26,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
 	UFCTWeaponFXComponent* WeaponFXComponent;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="VFX")
+	UNiagaraComponent* ProjectileFX;
+	
 	UPROPERTY(VisibleDefaultsOnly, Category="Weapon")
 	USphereComponent* SphereComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, Category="Movement")
 	UProjectileMovementComponent* ProjectileMovement;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Movement")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Movement")
 	float LifeTime = 10.0f;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	float DamageRadius = 200.f;
 	
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Damage")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Damage")
 	float DamageValue = 50.f;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category="Damage")

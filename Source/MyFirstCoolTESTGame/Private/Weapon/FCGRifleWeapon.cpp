@@ -53,7 +53,7 @@ void AFCGRifleWeapon::BeginPlay()
 void AFCGRifleWeapon::MakeShot()
 {
 	Super::MakeShot();
-
+/*
 	if(IsClipEmpty() && !IsAmmoEmpty())
 	{
 		if(FirstBulletsEmpty)
@@ -65,6 +65,12 @@ void AFCGRifleWeapon::MakeShot()
 		FirstBulletsEmpty=true;
 		EndFire();
 		OnBulletsEmpty.Broadcast();
+		return;
+	}*/
+
+	if(IsClipEmpty())
+	{
+		EndFire();
 		return;
 	}
 	
@@ -88,7 +94,7 @@ void AFCGRifleWeapon::MakeShot()
 	{
 		// UE_LOG(LogBaseWeapon, Display, TEXT("Hitted: %s"), *HitResult.BoneName.ToString());
 		
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
+		// DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0, 3.0f);
 
 		//DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
 		ImpactFXComponent->PlayImpactFX(HitResult);
@@ -97,7 +103,7 @@ void AFCGRifleWeapon::MakeShot()
 	}
 	else
 	{
-		DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
+		// DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
 	}
 
 	DecreaseAmmo();
@@ -110,9 +116,22 @@ APlayerController* AFCGRifleWeapon::GetPlayerController() const
 
 bool AFCGRifleWeapon::GetPlayerViewPoint(FRotator& Rotator, FVector& Location) const
 {
-	const auto Controller = GetPlayerController();
-	if(!Controller) return false;
-	Controller->GetPlayerViewPoint(Location, Rotator);
+	const auto FCTCharacter = Cast<ACharacter>(GetOwner());
+	if(!FCTCharacter) return false;
+
+	if(FCTCharacter->IsPlayerControlled())
+	{
+		const auto Controller = GetPlayerController();
+		if(!Controller) return false;
+		
+		Controller->GetPlayerViewPoint(Location, Rotator);
+	}else
+	{
+		Location = GetMuzzleWorldLocation();
+		// Rotator = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+		Rotator = GetOwner()->GetActorRotation(); // TODO: Change correct direction
+	}
+	
 	return true;
 }
 
@@ -123,7 +142,7 @@ bool AFCGRifleWeapon::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 
 	if(!GetPlayerViewPoint(ViewRotation, ViewLocation)) return false;
 	
-	TraceStart = GetMuzzleWorldLocation(); // ViewLocation; 
+	TraceStart = ViewLocation; // GetMuzzleWorldLocation(); 
 
 	const FVector ShootDirection = WeaponOwner->IsAim() ?
 		ViewRotation.Vector() : FMath::VRandCone(ViewRotation.Vector(), HipFireAccuracy);

@@ -24,6 +24,9 @@ class MYFIRSTCOOLTESTGAME_API AFCTCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AFCTCharacter();
+	
+	void StartAim();
+	void EndAim();
 
 protected:
 	// Called when the game starts or when spawned
@@ -91,9 +94,6 @@ private:
 	
 	void StartCrouch();
 	void EndCrouch();
-
-	void StartAim();
-	void EndAim();
 	
 	void OnDeath();
 	void OnHealthChanged(float Health);

@@ -28,7 +28,6 @@ AFCGBaseWeapon::AFCGBaseWeapon()
 	ArrowComponent->SetupAttachment(GetRootComponent());
 	
 	MuzzleFXComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
-	ArrowComponent->SetupAttachment(GetRootComponent());
 	MuzzleFXComponent->bAutoActivate = false;
 	MuzzleFXComponent->bAutoManageAttachment = true;
 

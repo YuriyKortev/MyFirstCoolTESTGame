@@ -32,6 +32,10 @@ public:
 	void AddCurrentWeaponClips(int32 ClipsAmount) const;
 	bool TryToAddClipsTo(TSubclassOf<AFCGBaseWeapon> WeaponType, int32 ClipsAmount);
 
+	float GetEquipingTime() const;
+
+	bool IsLastWeapon() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -54,8 +58,14 @@ protected:
 	UPROPERTY()
 	AFCTCharacter* WeaponOwner;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Weapon")
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapon")
 	bool Equiping = false;
+	
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapon")
+	bool Reloading = false;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category="Weapon")
+	bool Firing = false;
 
 private:
 	UPROPERTY()
@@ -78,5 +88,5 @@ private:
 
 	bool IsReadyShoot() const;
 
-	void ReloadFinished(USkeletalMeshComponent* Mesh) const;
+	void ReloadFinished(USkeletalMeshComponent* Mesh);
 };

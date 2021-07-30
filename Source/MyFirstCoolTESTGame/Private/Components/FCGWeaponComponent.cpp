@@ -26,14 +26,14 @@ UFCGWeaponComponent::UFCGWeaponComponent()
 void UFCGWeaponComponent::StartFire()
 {
 	if(!GetWorld() || !IsReadyShoot()) return;
-
+	Firing = true;
 	CurrentWeapon->StartFire();
 }
 
 void UFCGWeaponComponent::EndFire()
 {
 	if(!CurrentWeapon) return;
-
+	Firing = false;
 	CurrentWeapon->EndFire();
 }
 
@@ -103,18 +103,19 @@ void UFCGWeaponComponent::EquipWeapon(int32 WeaponIndex)
 
 void UFCGWeaponComponent::NextWeapon()
 {
-	if(Equiping || CurrentWeapon->Reloading) return;
+	if(Equiping || CurrentWeapon->Reloading || Firing) return;
 	
 	Equiping = true;
 	PlayAnimMontage(EquipAnimMontage);
 }
 
-void UFCGWeaponComponent::Reload()
+void UFCGWeaponComponent::Reload() // TODO: Fix flags
 {
 	if(CurrentWeapon->ClipsAvailable() <= 0 || CurrentWeapon->IsFullAmmo()
 		|| CurrentWeapon->Reloading || Equiping) return;
 	
 	CurrentWeapon->Reloading = true;
+	Reloading = true;
 	WeaponOwner->PlayAnimMontage(ReloadAnimMontage);
 }
 
@@ -164,6 +165,16 @@ bool UFCGWeaponComponent::TryToAddClipsTo(TSubclassOf<AFCGBaseWeapon> WeaponType
 		}
 	}
 	return false;
+}
+
+float UFCGWeaponComponent::GetEquipingTime() const
+{
+	return EquipAnimMontage->GetPlayLength() * EquipAnimMontage->RateScale;
+}
+
+bool UFCGWeaponComponent::IsLastWeapon() const
+{
+	return CurrentWeaponIndex == Weapons.Num() - 1;
 }
 
 void UFCGWeaponComponent::PlayAnimMontage(UAnimMontage* AnimMontage) const
@@ -226,8 +237,9 @@ bool UFCGWeaponComponent::IsReadyShoot() const
 	return !Equiping && !CurrentWeapon->Reloading && !CurrentWeapon->IsAmmoEmpty();
 }
 
-void UFCGWeaponComponent::ReloadFinished(USkeletalMeshComponent* Mesh) const
+void UFCGWeaponComponent::ReloadFinished(USkeletalMeshComponent* Mesh)
 {
+	Reloading = false;
 	CurrentWeapon->OnReloadFinished(Mesh);
 }
 
